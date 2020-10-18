@@ -53,14 +53,8 @@ pub struct Numbers {
 impl Numbers {
 	// create a Numbers object from a list of strings
 
-	pub fn from(strums: &[String]) -> Result<Numbers, <f64 as std::str::FromStr>::Err> {
-		let mut nums: Vec<f64> = Vec::new();
-
-		for strum in strums.iter() {
-			nums.push(strum.parse::<f64>()?);
-		}
-
-		return Ok(Numbers { values: nums } )
+	pub fn from(nums: Vec<f64>) -> Numbers {
+		Numbers { values: nums }
 	}
 
 	// operate on our values

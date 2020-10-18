@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 use std::io::{self, Write, BufRead};
+use std::env;
 
 mod arithmetic;
 mod parse;
 
+const ANSWER: &str = "Ans";
+
 pub struct Repl {
 	pub silent: bool,
 	pub format: bool,
+	pub reverse: bool,
 
 	vars: HashMap<String, f64>,
 }
@@ -14,22 +18,29 @@ pub struct Repl {
 impl Repl {
 	pub fn new() -> Repl {
 		let hash = 
-			[("$".to_string(), 0.0),
+			[(ANSWER.to_string(), 0.0),
 			 ("pi".to_string(), std::f64::consts::PI),
+			 ("t".to_string(), std::f64::consts::PI*2.0),
+			 ("tau".to_string(), std::f64::consts::PI*2.0),
 			 ("e".to_string(), std::f64::consts::E)]
 			.iter().cloned().collect();
 
-		Repl { silent: false, format: true, vars: hash }
+		Repl { silent: false, format: true, reverse: false, vars: hash }
 	}
 
 	pub fn start(&mut self) {
 		let mut input = String::new();
 		let mut result: parse::ReplResult;
+		let mut prompt = String::new();
+
+		if let Ok(p) = env::var("ROSE_PROMPT") {
+			prompt = p;
+		}
 
 		loop {
 			input.clear();
 			
-			print!("( ");
+			print!("{}", prompt);
 
 			std::io::stdout()
 				.flush()
@@ -65,9 +76,12 @@ impl Repl {
 		}
 	}
 
-	pub fn match_result(&self, result: parse::ReplResult) {
+	pub fn match_result(&mut self, result: parse::ReplResult) {
 		match result {
-			parse::ReplResult::Answer(n) => self.output_result(n, self.silent),
+			parse::ReplResult::Answer(n) => {
+				self.output_result(n, self.silent);
+				self.vars.insert(String::from(ANSWER), n);
+			}
 			parse::ReplResult::Output(n) => self.output_result(n, false),
 			parse::ReplResult::Error     => eprintln!("?"),
 			_                            => (),
@@ -77,7 +91,7 @@ impl Repl {
 	fn output_result(&self, result: f64, silent: bool) {
 		if !silent {
 			if self.format {
-				print!("  => ");
+				print!("  -> ");
 			}
 
 			println!("{}", result);

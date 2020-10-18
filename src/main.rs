@@ -6,8 +6,12 @@ mod repl;
 fn main() {
 	let mut rose = repl::Repl::new();
 	let rose_args = App::new("rose")
-				.version("1.0")
-				.about("A simple prefix calculator")
+				.version("1.1")
+				.about("A simple (reverse) polish notation calculator")
+				.arg(Arg::with_name("reverse")
+					.short("r")
+					.long("reverse")
+					.help("Enables RPN mode"))
 				.arg(Arg::with_name("evaluate")
 					.short("e")
 					.long("evaluate")
@@ -15,11 +19,7 @@ fn main() {
 				.arg(Arg::with_name("EXPRESSION")
 					.index(1)
 					.requires("evaluate")
-					.help("Expression to evaluate (requires the '-e' flag)"))
-				.arg(Arg::with_name("quiet")
-					.short("q")
-					.long("quiet")
-					.help("Don't print the version message on startup"))
+					.help("Expression to evaluate (requires the \"-e\" flag)"))
 				.arg(Arg::with_name("silent")
 					.short("s")
 					.long("silent")
@@ -30,12 +30,18 @@ fn main() {
 					.help("Don't format output"))
 				.get_matches();
 
+	// set options based on flags
+
 	if rose_args.is_present("silent") {
 		rose.silent = true;
 	}
 
 	if rose_args.is_present("format") {
 		rose.format = false;
+	}
+
+	if rose_args.is_present("reverse") {
+		rose.reverse = true;
 	}
 
 	if rose_args.is_present("evaluate") {
@@ -47,10 +53,6 @@ fn main() {
 			rose.parse_stdin();
 		}
 	} else {
-		if !rose_args.is_present("quiet") {
-			println!("rose 1.0");
-		}
-
 		rose.start()
 	}
 }

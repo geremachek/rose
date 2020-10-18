@@ -6,8 +6,8 @@
 **Usage:**
 
 ```
-rose 1.0
-A simple prefix calculator
+rose 1.1
+A simple (reverse) polish notation calculator
 
 USAGE:
     rose [FLAGS] [EXPRESSION]
@@ -16,7 +16,7 @@ FLAGS:
     -e, --evaluate    Evaluate stdin line by line
     -f, --format      Don't format output
     -h, --help        Prints help information
-    -q, --quiet       Don't print the version message on startup
+    -r, --reverse     Enables RPN mode
     -s, --silent      Supress output
     -V, --version     Prints version information
 
@@ -45,17 +45,27 @@ pi
   => 3.141592653589793
 e
   => 2.718281828459045
+tau
+  => 6.283185307179586
 put
-  => 5
+  => 6.283185307179586
 memory
 pi => 3.141592653589793
-$ => 5
+Ans => 5
 e => 2.718281828459045
 format
 + 5 5
 10
 silent
-+ $ 5
++ Ans 5
 p
 15
 ```
+
+**Configuration:**
+
+`ROSE_PROMPT="Your prompt"`
+
+**To do:**
+
+* Parenthesis support
