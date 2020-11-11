@@ -6,7 +6,7 @@
 **Usage:**
 
 ```
-rose 1.1
+rose 2.0
 A simple (reverse) polish notation calculator
 
 USAGE:
@@ -29,43 +29,81 @@ ARGS:
 (starting rose in interactive mode by running without any arguments)
 
 ```
+# Basic Operations
+
 + 5 6
-  => 11
+  -> 11
+
 - 5 6
-  => -1
+  -> -1
+
 * 5 6
-  => 30
+  -> 30
+
 / 5 6
-  => 0.8333333333333334
+  -> 0.8333333333333334
+
 ^ 5 6
-  => 15625
-root 25 2
-  => 5
-pi
-  => 3.141592653589793
+  -> 15625
+
+# Functions
+
+root 25 # By default root does square roots
+  -> 5
+
+root 125 3 # ...But you can do others
+  -> 5
+
+log 10 # Log does base 10 by default
+  -> 1
+
+log 5 5 # But again, you can do others
+  -> 1
+
+ln e # "e" is a variable in this context
+  -> 1
+
+# you can also do sin, cos, tan, asin acos, atan, etc. 
+
+# Variables
+
+pi # π
+  -> 3.141592653589793
+
 e
-  => 2.718281828459045
-tau
-  => 6.283185307179586
+  -> 2.718281828459045
+
+tau # τ 
+  -> 6.283185307179586
+
+Ans # result of the previous expression
+  -> 6.283185307179586
+
+# Commands
+
 put
-  => 6.283185307179586
-memory
-pi => 3.141592653589793
-Ans => 5
-e => 2.718281828459045
-format
-+ 5 5
-10
-silent
-+ Ans 5
-p
-15
+  -> 6.283185307179586
+
+memory # list the variables stored in memory
+Ans: 6.283185307179586
+π: 3.141592653589793
+e: 2.718281828459045
+τ: 6.283185307179586
+pi: 3.141592653589793
+tau: 6.283185307179586
+
+format # remove the "->" prefix from results
+
+silent # don't echo answers, unless  you use put
+
+reverse # enable reverse polish notation
+
+# Other
+
++ (+ 5 5) 1
+  -> 11
 ```
 
 **Configuration:**
 
 `ROSE_PROMPT="Your prompt"`
-
-**To do:**
-
-* Parenthesis support

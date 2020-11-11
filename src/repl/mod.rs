@@ -19,8 +19,9 @@ impl Repl {
 	pub fn new() -> Repl {
 		let hash = 
 			[(ANSWER.to_string(), 0.0),
+			 ("π".to_string(), std::f64::consts::PI),
 			 ("pi".to_string(), std::f64::consts::PI),
-			 ("t".to_string(), std::f64::consts::PI*2.0),
+			 ("τ".to_string(), std::f64::consts::PI*2.0),
 			 ("tau".to_string(), std::f64::consts::PI*2.0),
 			 ("e".to_string(), std::f64::consts::E)]
 			.iter().cloned().collect();
