@@ -6,7 +6,7 @@ mod repl;
 fn main() {
 	let mut rose = repl::Repl::new();
 	let rose_args = App::new("rose")
-				.version("1.1")
+				.version("2.0")
 				.about("A simple (reverse) polish notation calculator")
 				.arg(Arg::with_name("reverse")
 					.short("r")

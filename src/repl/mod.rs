@@ -91,11 +91,21 @@ impl Repl {
 
 	fn output_result(&self, result: f64, silent: bool) {
 		if !silent {
+			let mut postfix = String::new();
+			
 			if self.format {
-				print!("  -> ");
+				match env::var("ROSE_FORMAT_PREFIX") {
+					Ok(p)  => print!("{}", p),
+					Err(_) => print!("  -> "),
+				}
+
+				if let Ok(p) = env::var("ROSE_FORMAT_POSTFIX") {
+					postfix = p;
+				}
 			}
 
-			println!("{}", result);
+			println!("{}{}", result, postfix);
 		}
 	}
+
 }
