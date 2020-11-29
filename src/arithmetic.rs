@@ -1,3 +1,5 @@
+use crate::errors::RoseError;
+
 // enum for basic mathematical operators
 
 enum OpBasic {
@@ -12,6 +14,7 @@ enum OpBasic {
 
 enum OpFunction {
 	Root,
+	Factorial,
 
 	Logarithm,
 	Ln,
@@ -25,28 +28,21 @@ enum OpFunction {
 	Arctangent,
 }
 
-// operator errors
-
-pub enum OperatorError {
-	BadSyntax,
-	InvalidSymbol,
-}
-
 // operator trait
 
 pub trait Operator {
 	// create an operator from a symbol
 
-	fn new(symb: &str) -> Result<Self, OperatorError> where Self: std::marker::Sized;
+	fn new(symb: &str) -> Result<Self, RoseError> where Self: std::marker::Sized;
 	
-	// calculate an answer based on the operator and a string of values
+	// calculate an answer based on the operator and a string of values, also return the amount of values used
 
-	fn operate(&self, nums: Vec<f64>) -> Result<f64, OperatorError>;
+	fn operate(&self, nums: Vec<f64>) -> Result<(f64, usize), RoseError>;
 }
 
 // create a basic, or function operator from a symbol
 
-pub fn new_operator(symb: &str) -> Result<Box<dyn Operator>, OperatorError> {
+pub fn new_operator(symb: &str) -> Result<Box<dyn Operator>, RoseError> {
 	match OpBasic::new(symb) {
 		Ok(b)  => Ok(Box::new(b)),
 		Err(_) =>
@@ -55,11 +51,10 @@ pub fn new_operator(symb: &str) -> Result<Box<dyn Operator>, OperatorError> {
 				Err(e) => Err(e),
 			}
 	}
-
 }
 
 impl Operator for OpBasic {
-	fn new(symb: &str) -> Result<OpBasic, OperatorError> {
+	fn new(symb: &str) -> Result<OpBasic, RoseError> {
 		match symb.to_lowercase().as_str() {
 			"+"          => Ok(OpBasic::Addition),
 			"plus"       => Ok(OpBasic::Addition),
@@ -87,14 +82,14 @@ impl Operator for OpBasic {
 			"pow"        => Ok(OpBasic::Power),
 			"power"      => Ok(OpBasic::Power),
 
-			_            => Err(OperatorError::InvalidSymbol),
+			_            => Err(RoseError::UnknownCommand),
 		}
 	}
 
-	fn operate(&self, nums: Vec<f64>) -> Result<f64, OperatorError> {
+	fn operate(&self, nums: Vec<f64>) -> Result<(f64, usize), RoseError> {
 		// if the values feild is empty, return None, otherwise calculate.
 
-		let mut result = *nums.get(0).ok_or_else(|| OperatorError::BadSyntax)?;
+		let mut result = *nums.get(0).ok_or_else(|| RoseError::InvalidSyntax)?;
 
 		// loop through the elements and calculate a result
 
@@ -108,16 +103,20 @@ impl Operator for OpBasic {
 			}
 		}
 
-		Ok(result)
+		Ok((result, nums.len()))
 	}
 }
 
 impl Operator for OpFunction {
-	fn new(symb: &str) -> Result<OpFunction, OperatorError> {
+	fn new(symb: &str) -> Result<OpFunction, RoseError> {
 		match symb.to_lowercase().as_str() {
 			"√"          => Ok(OpFunction::Root),
 			"radical"    => Ok(OpFunction::Root),
 			"root"       => Ok(OpFunction::Root),
+
+			"!"          => Ok(OpFunction::Factorial),
+			"fact"       => Ok(OpFunction::Factorial),
+			"factorial"  => Ok(OpFunction::Factorial),
 
 			"logarithm"  => Ok(OpFunction::Logarithm),
 			"log"        => Ok(OpFunction::Logarithm),
@@ -143,15 +142,13 @@ impl Operator for OpFunction {
 			"arctangent" => Ok(OpFunction::Arctangent),
 			"atan"       => Ok(OpFunction::Arctangent),
 			
-			_            => Err(OperatorError::InvalidSymbol),
+			_            => Err(RoseError::UnknownCommand),
 		}
 	}
 
-	fn operate(&self, nums: Vec<f64>) -> Result<f64, OperatorError> {
-		let err = Err(OperatorError::BadSyntax);
-
+	fn operate(&self, nums: Vec<f64>) -> Result<(f64, usize), RoseError> {
 		if nums.len() == 0 {
-			return err
+			return Err(RoseError::InvalidSyntax);
 		}
 
 		match self {
@@ -159,26 +156,33 @@ impl Operator for OpFunction {
 				// in order to calculate a root, there must be two arguments
 
 				match nums.len()  {
-					2 => Ok(nums[0].powf(1.0/nums[1])),
-					1 => Ok(nums[0].powf(0.5)),
-					_ => err,
+					1     => Ok((nums[0].powf(0.5), 1)),
+					2 | _ => Ok((nums[0].powf(1.0/nums[1]), 2)),
+
 				}
+			OpFunction::Factorial => Ok((factorial(nums[0] as i64) as f64, 1)),
 			OpFunction::Logarithm =>
 				match nums.len() {
-					2 => Ok(nums[1].log(nums[0])),
-					1 => Ok(nums[0].log10()),
-					_ => err
+					1     => Ok((nums[0].log10(), 1)),
+					2 | _ => Ok((nums[1].log(nums[0]), 2)),
 				}
 
-			OpFunction::Ln          => Ok(nums[0].ln()),
+			OpFunction::Ln          => Ok((nums[0].ln(), 1)),
 			
-			OpFunction::Sine        => Ok(nums[0].sin()),
-			OpFunction::Cosine      => Ok(nums[0].cos()),
-			OpFunction::Tangent     => Ok(nums[0].tan()),
+			OpFunction::Sine        => Ok((nums[0].sin(), 1)),
+			OpFunction::Cosine      => Ok((nums[0].cos(), 1)),
+			OpFunction::Tangent     => Ok((nums[0].tan(), 1)),
 			
-			OpFunction::Arcsine     => Ok(nums[0].asin()),
-			OpFunction::Arccosine   => Ok(nums[0].acos()),
-			OpFunction::Arctangent  => Ok(nums[0].atan()),
+			OpFunction::Arcsine     => Ok((nums[0].asin(), 1)),
+			OpFunction::Arccosine   => Ok((nums[0].acos(), 1)),
+			OpFunction::Arctangent  => Ok((nums[0].atan(), 1)),
 		}
+	}
+}
+
+fn factorial(n: i64) -> i64 {
+	match n {
+		0 | 1 => 1,
+		_     => n * factorial(n - 1),
 	}
 }

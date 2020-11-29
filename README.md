@@ -1,6 +1,6 @@
 <h1 align="center">rose 🌹</h1>
 
-<p align="center">A dead simple prefix/polish notation calculator</p>
+<p align="center">A dead simple prefix/polish notation evaluator and stack calculator</p>
 <br><br>
 
 **Usage:**
@@ -18,6 +18,7 @@ FLAGS:
     -h, --help        Prints help information
     -r, --reverse     Enables RPN mode
     -s, --silent      Supress output
+    -S, --stack       Use a stack based calculator
     -V, --version     Prints version information
 
 ARGS:
@@ -27,6 +28,8 @@ ARGS:
 **Syntax:**
 
 (starting rose in interactive mode by running without any arguments)
+
+**Evaluator:**
 
 ```
 # Basic Operations
@@ -54,6 +57,9 @@ root 25 # By default root does square roots
 root 125 3 # ...But you can do others
   -> 5
 
+! 5
+  -> 120
+
 log 10 # Log does base 10 by default
   -> 1
 
@@ -79,6 +85,11 @@ tau # τ
 Ans # result of the previous expression
   -> 6.283185307179586
 
+set X 5 # set a variable
+
+X
+  -> 5
+
 # Commands
 
 put
@@ -102,6 +113,44 @@ reverse # enable reverse polish notation
 
 + (+ 5 5) 1
   -> 11
+```
+
+**Stack Calculato:r**
+
+```
+# Same commands (excluding reverse and set) as evaluator
+
+1 2 3 # add three numbers to the stack
+
++ # add the last two
+  -> 5
+
+stack # list everything on the stack
+1 5
+
+# 2 and 3 were removed after being added
+
+3 125 root # you may also string commands together on 
+  -> 5
+
+clear # clear the stack
+
+1 5 2 9 # put some random data on the stack
+
+reverse # reverse the stack
+
+stack
+9 2 5 1
+
+twirl # swap the last two values of the stack
+
+stack
+9 2 1 5
+
+pop # "pop off" the last element
+
+stack
+9 2 1
 ```
 
 **Configuration:**

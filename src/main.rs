@@ -1,13 +1,21 @@
 extern crate clap;
+
 use clap::{Arg, App};
 
-mod repl;
+mod arithmetic;
+mod standard;
+mod stack;
+mod errors;
+mod calculator;
 
 fn main() {
-	let mut rose = repl::Repl::new();
 	let rose_args = App::new("rose")
 				.version("2.0")
-				.about("A simple (reverse) polish notation calculator")
+				.about("A simple (reverse) polish notation evaluator and stack calculator")
+				.arg(Arg::with_name("stack")
+					.short("S")
+					.long("stack")
+					.help("Use a stack based calculator"))
 				.arg(Arg::with_name("reverse")
 					.short("r")
 					.long("reverse")
@@ -30,25 +38,16 @@ fn main() {
 					.help("Don't format output"))
 				.get_matches();
 
-	// set options based on flags
-
-	if rose_args.is_present("silent") {
-		rose.silent = true;
-	}
-
-	if rose_args.is_present("format") {
-		rose.format = false;
-	}
-
-	if rose_args.is_present("reverse") {
-		rose.reverse = true;
-	}
+	let mut rose = calculator::new_calculator(!rose_args.is_present("stack"),
+		rose_args.is_present("silent"),
+		!rose_args.is_present("format"),
+		rose_args.is_present("reverse"));
 
 	if rose_args.is_present("evaluate") {
 		if let Some(e) = rose_args.value_of("EXPRESSION") {
-			let result = rose.parse(e);
+			let result = rose.prep_parse(e);
 
-			rose.match_result(result);
+			rose.handle(result);
 		} else {
 			rose.parse_stdin();
 		}
