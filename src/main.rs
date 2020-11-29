@@ -38,7 +38,7 @@ fn main() {
 					.help("Don't format output"))
 				.get_matches();
 
-	let mut rose = calculator::new_calculator(!rose_args.is_present("stack"),
+	let mut rose = calculator::new_calculator(rose_args.is_present("stack"),
 		rose_args.is_present("silent"),
 		!rose_args.is_present("format"),
 		rose_args.is_present("reverse"));
