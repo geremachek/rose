@@ -156,5 +156,7 @@ stack
 **Configuration:**
 
 `ROSE_PROMPT="Your prompt"`
+
 `ROSE_FORMAT_PREFIX="Format prefix"`
+
 `ROSE_FORMAT_POSTFIX="Format prefix"`
