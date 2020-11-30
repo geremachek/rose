@@ -115,7 +115,7 @@ reverse # enable reverse polish notation
   -> 11
 ```
 
-**Stack Calculato:r**
+**Stack Calculator:**
 
 ```
 # Same commands (excluding reverse and set) as evaluator
