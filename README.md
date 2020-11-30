@@ -82,7 +82,7 @@ e
 tau # τ 
   -> 6.283185307179586
 
-Ans # result of the previous expression
+$ # result of the previous expression
   -> 6.283185307179586
 
 set X 5 # set a variable
@@ -96,7 +96,7 @@ put
   -> 6.283185307179586
 
 memory # list the variables stored in memory
-Ans: 6.283185307179586
+$: 6.283185307179586
 π: 3.141592653589793
 e: 2.718281828459045
 τ: 6.283185307179586
@@ -130,7 +130,7 @@ stack # list everything on the stack
 
 # 2 and 3 were removed after being added
 
-3 125 root # you may also string commands together on 
+125 3 root # you may also string commands together on 
   -> 5
 
 clear # clear the stack
