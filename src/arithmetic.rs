@@ -94,12 +94,20 @@ impl Operator for OpBasic {
 		// loop through the elements and calculate a result
 
 		for i in nums[1..].iter() {
-			result = match self {
-				OpBasic::Addition       => result + i,
-				OpBasic::Subtraction    => result - i,
-				OpBasic::Multiplication => result * i,
-				OpBasic::Division       => result / i,
-				OpBasic::Power          => result.powf(*i),
+			match self {
+				OpBasic::Addition       => result += i,
+				OpBasic::Subtraction    => result -= i,
+				OpBasic::Multiplication => result *= i,
+				OpBasic::Division       => {
+					// throw an error if we divide by zero
+
+					if i != &0.0 {
+						result /= i
+					} else {
+						return Err(RoseError::StrangeArguments)
+					}
+				}
+				OpBasic::Power          => result = result.powf(*i),
 			}
 		}
 
