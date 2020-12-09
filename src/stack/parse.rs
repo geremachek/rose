@@ -8,26 +8,28 @@ impl Stack {
 		if let Ok(v) = self.env.check_value(elem) {
 			self.stack.push(v);
 		} else if let Ok(o) = arithmetic::new_operator(elem) {
-			let mut opr_vec = Vec::new();
-			let len = self.stack.len();
+			if !self.stack.is_empty() {
+				let mut opr_vec = Vec::new();
+				let len = self.stack.len();
 
-			if len > 1 {
-				opr_vec = self.stack[(len-2)..].to_vec();
-			} else {
-				opr_vec.push(self.stack[len - 1]);
-			}
-
-			if let Ok((v, n)) = o.operate(opr_vec) {
-				// remove the used values from the stack
-
-				for _ in 0..n {
-					self.stack.pop();
+				if len > 1 {
+					opr_vec = self.stack[(len-2)..].to_vec();
+				} else {
+					opr_vec.push(self.stack[len - 1]);
 				}
 
-				// add the result to the stack and return it
+				if let Ok((v, n)) = o.operate(opr_vec) {
+					// remove the used values from the stack
 
-				self.stack.push(v);
-				return CalcResult::Answer(v);
+					for _ in 0..n {
+						self.stack.pop();
+					}
+
+					// add the result to the stack and return it
+
+					self.stack.push(v);
+					return CalcResult::Answer(v);
+				}
 			}
 		} else {
 			match elem {
