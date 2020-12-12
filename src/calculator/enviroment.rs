@@ -62,9 +62,9 @@ impl Enviroment {
 		if !silent {
 			if self.format {
 				println!("{}{}{}",
-					self.conf.fmt_prefix,
+					&self.conf.fmt_prefix,
 					result,
-					self.conf.fmt_postfix);
+					&self.conf.fmt_postfix);
 			}
 		}
 	}
