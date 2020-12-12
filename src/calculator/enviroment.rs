@@ -72,15 +72,15 @@ impl Enviroment {
 	// check to see if a value is valid against the enviroment
 
 	pub fn check_value(&self, val: &str) -> Result<f64, std::num::ParseFloatError> {
-		let mut trimmed_val = val.to_string();
+		let mut trimmed_val = val;
 		let mut sign = 1.0; // by default the sign is positive
 
 		if val.starts_with("-") {
-			trimmed_val = val.chars().skip(1).collect::<String>();
+			trimmed_val = &val[1..];
 			sign = -1.0; // sign is negative
 		}
 
-		match self.vars.get(&trimmed_val) {
+		match self.vars.get(trimmed_val) {
 			Some(n) => Ok(*n*sign),
 			None    => val.parse::<f64>(),
 		}
