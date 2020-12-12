@@ -70,7 +70,7 @@ impl standard::Standard {
 					}
 				}
 				
-				return match o.operate(values) {
+				return match o.operate(&values) {
 					Ok((v, _)) => Ok(v),
 					Err(e)     => Err(e),
 				}

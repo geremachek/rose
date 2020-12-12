@@ -18,7 +18,7 @@ impl Stack {
 					opr_vec.push(self.stack[len - 1]);
 				}
 
-				if let Ok((v, n)) = o.operate(opr_vec) {
+				if let Ok((v, n)) = o.operate(&opr_vec) {
 					// remove the used values from the stack
 
 					for _ in 0..n {

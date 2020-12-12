@@ -37,7 +37,7 @@ pub trait Operator {
 	
 	// calculate an answer based on the operator and a string of values, also return the amount of values used
 
-	fn operate(&self, nums: Vec<f64>) -> Result<(f64, usize), RoseError>;
+	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError>;
 }
 
 // create a basic, or function operator from a symbol
@@ -86,9 +86,9 @@ impl Operator for OpBasic {
 		}
 	}
 
-	fn operate(&self, nums: Vec<f64>) -> Result<(f64, usize), RoseError> {
-		// if the values feild is empty, return None, otherwise calculate.
-
+	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
+		// if the values feild is empty, return an error, otherwise calculate.
+		
 		let mut result = *nums.get(0).ok_or_else(|| RoseError::InvalidSyntax)?;
 
 		// loop through the elements and calculate a result
@@ -154,7 +154,7 @@ impl Operator for OpFunction {
 		}
 	}
 
-	fn operate(&self, nums: Vec<f64>) -> Result<(f64, usize), RoseError> {
+	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
 		if nums.len() == 0 {
 			return Err(RoseError::InvalidSyntax);
 		}
