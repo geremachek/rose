@@ -1,4 +1,5 @@
 use crate::errors::RoseError;
+use std::convert::TryFrom;
 
 // enum for basic mathematical operators
 
@@ -31,10 +32,6 @@ enum OpFunction {
 // operator trait
 
 pub trait Operator {
-	// create an operator from a symbol
-
-	fn new(symb: &str) -> Result<Self, RoseError> where Self: std::marker::Sized;
-	
 	// calculate an answer based on the operator and a string of values, also return the amount of values used
 
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError>;
@@ -43,19 +40,21 @@ pub trait Operator {
 // create a basic, or function operator from a symbol
 
 pub fn new_operator(symb: &str) -> Result<Box<dyn Operator>, RoseError> {
-	match OpBasic::new(symb) {
+	match OpBasic::try_from(symb) {
 		Ok(b)  => Ok(Box::new(b)),
 		Err(_) =>
-			match OpFunction::new(symb) {
+			match OpFunction::try_from(symb) {
 				Ok(f)  => Ok(Box::new(f)),
 				Err(e) => Err(e),
 			}
 	}
 }
 
-impl Operator for OpBasic {
-	fn new(symb: &str) -> Result<OpBasic, RoseError> {
-		match symb.to_lowercase().as_str() {
+impl TryFrom<&str> for OpBasic {
+	type Error = RoseError;
+
+	fn try_from(symbol: &str) -> Result<Self, Self::Error> {
+		match symbol.to_lowercase().as_str() {
 			"+"          => Ok(OpBasic::Addition),
 			"plus"       => Ok(OpBasic::Addition),
 			"add"        => Ok(OpBasic::Addition),
@@ -85,7 +84,9 @@ impl Operator for OpBasic {
 			_            => Err(RoseError::UnknownCommand),
 		}
 	}
+}
 
+impl Operator for OpBasic {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
 		// if the values feild is empty, return an error, otherwise calculate.
 		
@@ -115,9 +116,11 @@ impl Operator for OpBasic {
 	}
 }
 
-impl Operator for OpFunction {
-	fn new(symb: &str) -> Result<OpFunction, RoseError> {
-		match symb.to_lowercase().as_str() {
+impl TryFrom<&str> for OpFunction {
+	type Error = RoseError;
+
+	fn try_from(symbol: &str) -> Result<Self, Self::Error> {
+		match symbol.to_lowercase().as_str() {
 			"√"          => Ok(OpFunction::Root),
 			"radical"    => Ok(OpFunction::Root),
 			"root"       => Ok(OpFunction::Root),
@@ -153,7 +156,9 @@ impl Operator for OpFunction {
 			_            => Err(RoseError::UnknownCommand),
 		}
 	}
+}
 
+impl Operator for OpFunction {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
 		if nums.len() == 0 {
 			return Err(RoseError::InvalidSyntax);
