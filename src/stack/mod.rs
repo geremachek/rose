@@ -5,11 +5,17 @@ mod parse;
 // Stack calculator
 
 pub struct Stack {
-	pub env: Enviroment,
-	pub stack: Vec<f64>,
+	env: Enviroment,
+	stack: Vec<f64>,
 }
 
 impl Stack {
+	// create a new stack calculator
+
+	pub fn new(s: bool, f: bool) -> Stack {
+		Stack { env: Enviroment::new(s, f), stack: Vec::new() }
+	}
+
 	fn show_stack(&self) -> String {
 		let mut shown = String::new();
 		
@@ -41,12 +47,6 @@ impl Stack {
 }
 
 impl Calculator for Stack {
-	// create a new stack calculator
-
-	fn new(s: bool, f: bool) -> Stack {
-		Stack { env: Enviroment::new(s, f), stack: Vec::new() }
-	}
-
 	// return our enviroment structure
 
 	fn get_env(&self) -> &Enviroment {

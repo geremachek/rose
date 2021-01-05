@@ -5,20 +5,22 @@ mod parse;
 const ANSWER: &str = "$"; // the variable that stores the answer
 
 pub struct Standard {
-	pub env: Enviroment,
-	pub reverse: bool
+	env: Enviroment,
+	reverse: bool
 }
 
-impl Calculator for Standard {
+impl Standard {
 	// create a new standard calculator
 
-	fn new(s: bool, f: bool) -> Standard {
+	pub fn new(s: bool, f: bool, r: bool) -> Standard {
 		let mut e = Enviroment::new(s, f);
 		e.vars.insert(ANSWER.to_string(), 0.0);
 
-		Standard { env: e, reverse: false }	
+		Standard { env: e, reverse: r }	
 	}
+}
 
+impl Calculator for Standard {
 	// return our enviroment structure
 
 	fn get_env(&self) -> &Enviroment {

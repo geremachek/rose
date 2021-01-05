@@ -16,10 +16,6 @@ pub enum CalcResult {
 }
 
 pub trait Calculator {
-	// create a new calculator
-
-	fn new(s: bool, f: bool) -> Self where Self: Sized;
-	
 	// the calculator's parser
 
 	fn parse(&mut self, elems: Vec<&str>) -> Vec<CalcResult>;
@@ -104,13 +100,12 @@ pub trait Calculator {
 	}
 }
 
-pub fn new_calculator(stack: bool, s: bool, f: bool, r: bool) -> Box<dyn Calculator> {
-	if stack {
-		return Box::new(crate::stack::Stack::new(s, f));
+// new calculator
+
+pub fn new_calc(s: bool, f: bool, r: Option<bool>) -> Box<dyn Calculator> {
+	if let Some(b) = r {
+		return Box::new(crate::standard::Standard::new(s, f, b));
 	}
 
-	let mut standard = Box::new(crate::standard::Standard::new(s, f));
-	standard.reverse = r;
-
-	return standard;
+	Box::new(crate::stack::Stack::new(s, f))
 }
