@@ -42,11 +42,7 @@ pub trait Operator {
 pub fn new_operator(symb: &str) -> Result<Box<dyn Operator>, RoseError> {
 	match OpBasic::try_from(symb) {
 		Ok(b)  => Ok(Box::new(b)),
-		Err(_) =>
-			match OpFunction::try_from(symb) {
-				Ok(f)  => Ok(Box::new(f)),
-				Err(e) => Err(e),
-			}
+		_      => Ok(Box::new(OpFunction::try_from(symb)?))
 	}
 }
 
