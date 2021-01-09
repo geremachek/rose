@@ -3,8 +3,8 @@ use std::env;
 pub struct Config {
 	pub prompt: String,
 
-	pub fmt_prefix: String,
-	pub fmt_postfix: String,
+	fmt_prefix: String,
+	fmt_postfix: String,
 }
 
 impl Config {
@@ -17,5 +17,12 @@ impl Config {
 			fmt_postfix: env::var("ROSE_FORMAT_POSTFIX")
 				.unwrap_or_else(|_| "".to_string()),
 		}
+	}
+
+	pub fn format_result(&self, result: f64) {
+		println!("{}{}{}",
+			&self.fmt_prefix,
+			result,
+			&self.fmt_postfix);
 	}
 }

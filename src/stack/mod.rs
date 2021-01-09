@@ -1,4 +1,4 @@
-use crate::calculator::{Calculator, CalcResult, enviroment::Enviroment};
+use crate::{errors::RoseError, calculator::{Calculator, CalcResult, enviroment::Enviroment}};
 
 mod parse;
 
@@ -55,14 +55,14 @@ impl Calculator for Stack {
 
 	// stack parser
 
-	fn parse(&mut self, elems: Vec<&str>) -> Vec<CalcResult> {
+	fn parse(&mut self, elems: &Vec<&str>) -> Result<Vec<CalcResult>, RoseError> {
 		let mut results = Vec::new();
 
 		for e in elems {
-			results.push(self.parse_element(e))
+			results.push(self.parse_element(e)?)
 		}
 
-		results
+		Ok(results)
 	}
 }
 

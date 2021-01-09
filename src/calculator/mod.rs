@@ -1,5 +1,5 @@
 use std::io::{self, Write, BufRead};
-use crate::errors;
+use crate::errors::RoseError;
 
 pub mod enviroment;
 mod config;
@@ -10,15 +10,14 @@ pub enum CalcResult {
 	Answer(f64),
 	Output(f64),
 	Message(String),
-	Error(errors::RoseError),
 	Quit,
 	None,
 }
 
 pub trait Calculator {
-	// the calculator's parser
+	// the calculator's parser, it returns an array of results to handle
 
-	fn parse(&mut self, elems: Vec<&str>) -> Vec<CalcResult>;
+	fn parse(&mut self, elems: &Vec<&str>) -> Result<Vec<CalcResult>, RoseError>;
 
 	// get the enviroment variable
 
@@ -26,16 +25,19 @@ pub trait Calculator {
 
 	// handle results we get from the parser, return true if we are quiting
 
-	fn handle(&self, results: Vec<CalcResult>) -> bool {
-		for r in results {
-			match r {
-				CalcResult::Answer(n)  => self.get_env().output_result(n, self.get_env().silent),
-				CalcResult::Output(n)  => self.get_env().output_result(n, false),
-				CalcResult::Message(m) => print!("{}", m),
-				CalcResult::Error(_)   => eprintln!("?"),
-				CalcResult::Quit       => return true,
-				CalcResult::None       => (),
+	fn handle(&self, results: &Result<Vec<CalcResult>, RoseError>) -> bool {
+		if let Ok(res) = results {
+			for r in res {
+				match r {
+					CalcResult::Answer(n)  => self.get_env().output_result(*n, self.get_env().silent),
+					CalcResult::Output(n)  => self.get_env().output_result(*n, false),
+					CalcResult::Message(m) => print!("{}", m),
+					CalcResult::Quit       => return true,
+					CalcResult::None       => (),
+				}
 			}
+		} else {
+			eprintln!("?");
 		}
 
 		false
@@ -59,12 +61,11 @@ pub trait Calculator {
 				.read_line(&mut input)
 				.expect("rose: unable to read line");
 		
-			let results = self.prep_parse(&input);
+			let results = &self.parse(&prep_str(&input));
 
-			if self.handle(results) {
+			if self.handle(results) { // exit the REPL if handle returns true
 				break;
 			}
-
 		}
 	}
 
@@ -74,30 +75,25 @@ pub trait Calculator {
 		let stdin = io::stdin();
 
 		for line in stdin.lock().lines() {
-			let result = self.prep_parse(&line
-				.expect("rose: couldn't read from stdin"));
+			let result = &self.parse(&prep_str(&line
+				.expect("rose: couldn't read from stdin")));
 
-			if self.handle(result) {
+			if self.handle(result) { // stop early if handle returns true
 				break;
 			}
 
 		}
 	}
+}
 
-	// prepare our string for parsing and then parse it
+// prepare our string for parsing
 
-	fn prep_parse(&mut self, line: &str) -> Vec<CalcResult> {
-		let trimmed = line.split_at(line.chars()
-			.position(|c| c == '#')
-			.or_else(|| Some(line.len()))
-			.unwrap()).0;
-
-		if !trimmed.trim().is_empty() {
-			return self.parse(trimmed.split_whitespace().collect());	
-		}
-
-		Vec::new()
-	}
+pub fn prep_str(line: &str) -> Vec<&str> {
+	line.split_at(line.chars()
+		.position(|c| c == '#')
+		.or_else(|| Some(line.len()))
+		.unwrap()).0
+		.split_whitespace().collect::<Vec<&str>>()
 }
 
 // new calculator

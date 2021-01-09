@@ -86,7 +86,7 @@ impl Operator for OpBasic {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
 		// if the values feild is empty, return an error, otherwise calculate.
 		
-		let mut result = *nums.get(0).ok_or_else(|| RoseError::InvalidSyntax)?;
+		let mut result = *nums.get(0).ok_or(RoseError::InvalidSyntax)?;
 
 		// loop through the elements and calculate a result
 
@@ -156,10 +156,6 @@ impl TryFrom<&str> for OpFunction {
 
 impl Operator for OpFunction {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
-		if nums.len() == 0 {
-			return Err(RoseError::InvalidSyntax);
-		}
-
 		match self {
 			OpFunction::Root =>
 				// in order to calculate a root, there must be two arguments

@@ -90,6 +90,11 @@ set X 5 # set a variable
 X
   -> 5
 
+set Y root 25 # set a variable to the result of an expression
+
+Y
+  -> 5
+
 # Commands
 
 put
@@ -97,9 +102,7 @@ put
 
 memory # list the variables stored in memory
 $: 6.283185307179586
-π: 3.141592653589793
 e: 2.718281828459045
-τ: 6.283185307179586
 pi: 3.141592653589793
 tau: 6.283185307179586
 

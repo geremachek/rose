@@ -1,27 +1,55 @@
-use crate::{arithmetic, standard, errors::RoseError};
+use crate::{calculator::CalcResult, arithmetic, errors::RoseError};
+use super::{Standard, ANSWER};
 
-impl standard::Standard {
+impl Standard {
+	// parse commands or an expression and return the result
+
+	pub fn parser(&mut self, elems: &Vec<&str>) -> Result<CalcResult, RoseError> {
+		if let Ok(v) = self.evaluate_expression(&elems) {
+			self.env.store(ANSWER, v);
+			return Ok(CalcResult::Answer(v));
+		} else {
+			match elems[0] { // match the command
+				"put"     | "p"  => return Ok(CalcResult::Output(*self.env.read_var(ANSWER).unwrap())),
+				"reverse" | "r"  => self.reverse = !self.reverse,
+				"set"     | "s"  => {
+					if elems.len() >= 3 {
+						if let Err(_) = elems[1].parse::<f64>() { // we don't want the user redefining the value of a number!
+							if let Ok(n) = self.evaluate_expression(&elems[2..].to_vec()) {
+								self.env.store(elems[1], n);
+							}
+						} else {
+							return Err(RoseError::InvalidSyntax);
+						}
+					 } else {
+					 	return Err(RoseError::StrangeArguments);
+					 }
+				}
+				_                => return self.env.command(elems[0]),
+			}
+		}
+
+		Ok(CalcResult::None)
+	}
+
 	// evaluate an expression
 
-	pub fn evaluate_expression(&self, elems: &Vec<&str>) -> Result<f64, RoseError> {
+	fn evaluate_expression(&self, elems: &Vec<&str>) -> Result<f64, RoseError> {
 		if elems.len() == 1 { // only one element
-			return match self.env.check_value(elems[0]) {
-				Ok(v)  => Ok(v),
-				Err(_) => Err(RoseError::StrangeArguments),
-			}
+			return self.env.check_value(elems[0])
 		} else {
-			let mut symbol = elems[0];
+			let mut symbol = 0;
 			let mut begin = 1;
 			let mut end = elems.len();
 
 			if self.reverse { // are we in RPN mode?
-				symbol = elems.iter().last().unwrap(); // set where we should check for the operator symbol
+				symbol = elems.len() - 1; // set where we should check for the operator symbol
 				
 				begin = 0; // shift the location of values
 				end = end - 1;
 			}
 
-			if let Ok(o)  = arithmetic::new_operator(symbol) {
+			if let Ok(o)  = arithmetic::new_operator(elems[symbol]) {
 				let mut values = Vec::new();
 				let mut sub_expr = Vec::new();
 
@@ -70,10 +98,7 @@ impl standard::Standard {
 					}
 				}
 				
-				return match o.operate(&values) {
-					Ok((v, _)) => Ok(v),
-					Err(e)     => Err(e),
-				}
+				return Ok(o.operate(&values)?.0)
 			}
 		}
 
