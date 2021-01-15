@@ -52,7 +52,7 @@ fn main() {
 
 	if rose_args.is_present("evaluate") {
 		if let Some(e) = rose_args.value_of("EXPRESSION") {
-			let result = rose.parse(&calculator::prep_str(e));
+			let result = rose.meta_parse(e);
 
 			rose.handle(&result);
 		} else {

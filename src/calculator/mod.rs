@@ -61,7 +61,7 @@ pub trait Calculator {
 				.read_line(&mut input)
 				.expect("rose: unable to read line");
 		
-			let results = &self.parse(&prep_str(&input));
+			let results = &self.meta_parse(&input);
 
 			if self.handle(results) { // exit the REPL if handle returns true
 				break;
@@ -75,8 +75,8 @@ pub trait Calculator {
 		let stdin = io::stdin();
 
 		for line in stdin.lock().lines() {
-			let result = &self.parse(&prep_str(&line
-				.expect("rose: couldn't read from stdin")));
+			let result = &self.meta_parse(&line
+				.expect("rose: couldn't read from stdin"));
 
 			if self.handle(result) { // stop early if handle returns true
 				break;
@@ -84,16 +84,22 @@ pub trait Calculator {
 
 		}
 	}
-}
 
-// prepare our string for parsing
+	// prepare our string for parsing and then parse it
 
-pub fn prep_str(line: &str) -> Vec<&str> {
-	line.split_at(line.chars()
-		.position(|c| c == '#')
-		.or_else(|| Some(line.len()))
-		.unwrap()).0
-		.split_whitespace().collect::<Vec<&str>>()
+	fn meta_parse(&mut self, line: &str) -> Result<Vec<CalcResult>, RoseError> {
+		let prep = line.split_at(line.chars()
+			.position(|c| c == '#')
+			.or_else(|| Some(line.len()))
+			.unwrap()).0
+			.split_whitespace().collect::<Vec<&str>>();
+
+		if prep.is_empty() {
+			return Ok(vec![CalcResult::None]);
+		} else {
+			return self.parse(&prep);
+		}
+	}
 }
 
 // new calculator
