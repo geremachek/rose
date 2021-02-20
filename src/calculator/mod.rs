@@ -49,8 +49,6 @@ pub trait Calculator {
 		let mut input = String::new();
 
 		loop {
-			input.clear();
-			
 			print!("{}", self.get_env().conf.prompt);
 
 			std::io::stdout()
@@ -66,6 +64,8 @@ pub trait Calculator {
 			if self.handle(results) { // exit the REPL if handle returns true
 				break;
 			}
+
+			input.clear();
 		}
 	}
 
