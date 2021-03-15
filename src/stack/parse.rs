@@ -35,7 +35,7 @@ impl Stack {
 			match elem {
 				"put"     | "p"         => return Ok(CalcResult::Output(*self.stack.last()
 								.unwrap_or(&0.0))),
-				"stack"   | "S"         => return Ok(CalcResult::Message(self.show_stack())),
+				"stack"   | "."         => return Ok(CalcResult::Message(self.show_stack())),
 				"clear"   | "c"         => self.stack.clear(),
 				"reverse" | "rev" | "r" => self.reverse_stack(),
 				"twirl"   | "t"         => self.twirl(),
