@@ -6,7 +6,7 @@
 **Usage:**
 
 ```
-rose 2.0
+rose 2.4.2
 A simple (reverse) polish notation calculator
 
 USAGE:
