@@ -9,10 +9,8 @@ mod errors;
 mod calculator;
 
 fn main() {
-	let rose_args = App::new("rose")
-				.version("2.0")
+	let rose_args = App::new("rose:")
 				.about("A simple (reverse) polish notation evaluator and stack calculator")
-				.author("J. Geremachek")
 				.arg(Arg::with_name("stack")
 					.short("S")
 					.long("stack")
