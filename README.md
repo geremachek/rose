@@ -1,7 +1,6 @@
-<h1 align="center">rose 🌹</h1>
+# 🌹 rose
 
-<p align="center">A dead simple prefix/polish notation evaluator and stack calculator</p>
-<br><br>
+A dead simple prefix/polish notation evaluator and stack calculator
 
 **Usage:**
 
