@@ -29,7 +29,7 @@ impl Calculator for Standard {
 
 	// parse a line
 
-	fn parse(&mut self, elems: &Vec<&str>) -> Result<Vec<CalcResult>, RoseError> {
+	fn parse(&mut self, elems: &[&str]) -> Result<Vec<CalcResult>, RoseError> {
 		Ok(vec![self.parser(elems)?])
 	}
 }

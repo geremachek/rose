@@ -21,7 +21,7 @@ impl Stack {
 		
 		if !self.stack.is_empty() {
 			for n in &self.stack {
-				shown.push_str(&format!{"{} ", n});
+				shown.push_str(&n.to_string());
 			}
 
 			shown.push_str("\n")
@@ -55,7 +55,7 @@ impl Calculator for Stack {
 
 	// stack parser
 
-	fn parse(&mut self, elems: &Vec<&str>) -> Result<Vec<CalcResult>, RoseError> {
+	fn parse(&mut self, elems: &[&str]) -> Result<Vec<CalcResult>, RoseError> {
 		let mut results = Vec::new();
 
 		for e in elems {

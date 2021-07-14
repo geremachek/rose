@@ -4,7 +4,7 @@ use super::{Standard, ANSWER};
 impl Standard {
 	// parse commands or an expression and return the result
 
-	pub fn parser(&mut self, elems: &Vec<&str>) -> Result<CalcResult, RoseError> {
+	pub fn parser(&mut self, elems: &[&str]) -> Result<CalcResult, RoseError> {
 		if let Ok(v) = self.evaluate_expression(&elems) {
 			self.env.store(ANSWER, v);
 			return Ok(CalcResult::Answer(v));
@@ -15,7 +15,7 @@ impl Standard {
 				"set"     | "s"  => {
 					if elems.len() >= 3 {
 						if let Err(_) = elems[1].parse::<f64>() { // we don't want the user redefining the value of a number!
-							if let Ok(n) = self.evaluate_expression(&elems[2..].to_vec()) {
+							if let Ok(n) = self.evaluate_expression(&elems[2..]) {
 								self.env.store(elems[1], n);
 							}
 						} else {
@@ -34,7 +34,7 @@ impl Standard {
 
 	// evaluate an expression
 
-	fn evaluate_expression(&self, elems: &Vec<&str>) -> Result<f64, RoseError> {
+	fn evaluate_expression(&self, elems: &[&str]) -> Result<f64, RoseError> {
 		if elems.len() == 1 { // only one element
 			return self.env.check_value(elems[0])
 		} else {

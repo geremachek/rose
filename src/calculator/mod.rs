@@ -17,7 +17,7 @@ pub enum CalcResult {
 pub trait Calculator {
 	// the calculator's parser, it returns an array of results to handle
 
-	fn parse(&mut self, elems: &Vec<&str>) -> Result<Vec<CalcResult>, RoseError>;
+	fn parse(&mut self, elems: &[&str]) -> Result<Vec<CalcResult>, RoseError>;
 
 	// get the enviroment variable
 
@@ -88,16 +88,16 @@ pub trait Calculator {
 	// prepare our string for parsing and then parse it
 
 	fn meta_parse(&mut self, line: &str) -> Result<Vec<CalcResult>, RoseError> {
-		let prep = line.split_at(line.chars()
+		let prep = &line.split_at(line.chars()
 			.position(|c| c == '#')
 			.or_else(|| Some(line.len()))
 			.unwrap()).0
-			.split_whitespace().collect::<Vec<&str>>();
+			.split_whitespace().collect::<Vec<&str>>()[..];
 
 		if prep.is_empty() {
 			return Ok(vec![CalcResult::None]);
 		} else {
-			return self.parse(&prep);
+			return self.parse(prep);
 		}
 	}
 }
