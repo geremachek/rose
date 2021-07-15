@@ -26,18 +26,19 @@ pub trait Calculator {
 	// handle results we get from the parser, return true if we are quiting
 
 	fn handle(&self, results: &Result<Vec<CalcResult>, RoseError>) -> bool {
-		if let Ok(res) = results {
-			for r in res {
-				match r {
-					CalcResult::Answer(n)  => self.get_env().output_result(*n, self.get_env().silent),
-					CalcResult::Output(n)  => self.get_env().output_result(*n, false),
-					CalcResult::Message(m) => print!("{}", m),
-					CalcResult::Quit       => return true,
-					CalcResult::None       => (),
+		match results {
+			Ok(res) => {		
+				for r in res {
+					match r {
+						CalcResult::Answer(n)  => self.get_env().output_result(*n, self.get_env().silent),
+						CalcResult::Output(n)  => self.get_env().output_result(*n, false),
+						CalcResult::Message(m) => print!("{}", m),
+						CalcResult::Quit       => return true,
+						CalcResult::None       => (),
+					}
 				}
 			}
-		} else {
-			eprintln!("?");
+			Err(_)  => eprintln!("?"),
 		}
 
 		false

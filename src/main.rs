@@ -49,12 +49,13 @@ fn main() {
 		rev);
 
 	if rose_args.is_present("evaluate") {
-		if let Some(e) = rose_args.value_of("EXPRESSION") {
-			let result = rose.meta_parse(e);
+		match rose_args.value_of("EXPRESSION") {
+			Some(e) => {
+				let result = rose.meta_parse(e);
 
-			rose.handle(&result);
-		} else {
-			rose.parse_stdin();
+				rose.handle(&result);
+			}
+			None    => rose.parse_stdin(),
 		}
 	} else {
 		rose.start()
