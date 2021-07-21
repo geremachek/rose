@@ -37,7 +37,7 @@ impl Stack {
 								.unwrap_or(&0.0))),
 				"stack"   | "."         => return Ok(CalcResult::Message(self.show_stack())),
 				"clear"   | "c"         => self.stack.clear(),
-				"reverse" | "rev" | "r" => self.reverse_stack(),
+				"reverse" | "rev" | "r" => self.stack.reverse(),
 				"twirl"   | "t"         => self.twirl(),
 				"pop"     | "P"         => { self.stack.pop(); }
 				_                       => return self.env.command(elem),

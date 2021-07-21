@@ -21,7 +21,7 @@ impl Stack {
 		
 		if !self.stack.is_empty() {
 			for n in &self.stack {
-				shown.push_str(&n.to_string());
+				shown.push_str(&format!("{} ", n));
 			}
 
 			shown.push_str("\n")
@@ -30,18 +30,11 @@ impl Stack {
 		shown
 	}
 
-	fn reverse_stack(&mut self) {
-		self.stack = reverse(&self.stack);
-	}
-
 	fn twirl(&mut self) {
 		let len = self.stack.len();
 
 		if len > 1 {
-			let second = self.stack[len - 2]; // save the second to last item
-
-			self.stack.remove(len - 2); // remove the second to last item
-			self.stack.push(second); // push it to the end of the stack
+			self.stack.swap(len-2, len-1)
 		}
 	}
 }
@@ -64,14 +57,4 @@ impl Calculator for Stack {
 
 		Ok(results)
 	}
-}
-
-fn reverse<T: Copy>(items: &Vec<T>) -> Vec<T> {
-	let mut reversed = Vec::new();
-
-	for i in items.iter().rev() {
-		reversed.push(*i);
-	}
-
-	reversed
 }

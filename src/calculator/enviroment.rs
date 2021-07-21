@@ -96,4 +96,3 @@ impl Enviroment {
 		self.vars.get(name)
 	}
 }
-

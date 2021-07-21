@@ -12,7 +12,7 @@ impl Standard {
 			match elems[0] { // match the command
 				"put"     | "p"  => return Ok(CalcResult::Output(*self.env.read_var(ANSWER).unwrap())),
 				"reverse" | "r"  => self.reverse = !self.reverse,
-				"set"     | "s"  => {
+				"set"     | "="  => {
 					if elems.len() >= 3 {
 						if let Err(_) = elems[1].parse::<f64>() { // we don't want the user redefining the value of a number!
 							if let Ok(n) = self.evaluate_expression(&elems[2..]) {
