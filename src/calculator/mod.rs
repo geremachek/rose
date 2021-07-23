@@ -44,45 +44,24 @@ pub trait Calculator {
 		false
 	}
 
-	// start an interative REPL
+	// parse standard input (a file or some text) or launch into a repl
 
-	fn start(&mut self) {
-		let mut input = String::new();
+	fn start(&mut self, prompt: bool) {
+		for line in io::stdin().lock().lines() {
+			if prompt {
+				print!("{}", self.get_env().conf.prompt);
 
-		loop {
-			print!("{}", self.get_env().conf.prompt);
-
-			std::io::stdout()
-				.flush()
-				.expect("rose: unable to flush stdout");
-
-			io::stdin()
-				.read_line(&mut input)
-				.expect("rose: unable to read line");
-		
-			let results = &self.meta_parse(&input);
-
-			if self.handle(results) { // exit the REPL if handle returns true
-				break;
+				std::io::stdout()
+					.flush()
+					.expect("rose: unable to flush stdout");
 			}
 
-			input.clear();
-		}
-	}
-
-	// parse standard input (a file or some text) instead of launching into a repl
-
-	fn parse_stdin(&mut self) {
-		let stdin = io::stdin();
-
-		for line in stdin.lock().lines() {
 			let result = &self.meta_parse(&line
 				.expect("rose: couldn't read from stdin"));
 
 			if self.handle(result) { // stop early if handle returns true
 				break;
 			}
-
 		}
 	}
 
@@ -97,9 +76,9 @@ pub trait Calculator {
 
 		if prep.is_empty() {
 			return Ok(vec![CalcResult::None]);
-		} else {
-			return self.parse(prep);
 		}
+		
+		self.parse(prep)
 	}
 }
 

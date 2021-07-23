@@ -165,7 +165,7 @@ impl Operator for OpFunction {
 					2 | _ => Ok((nums[0].powf(1.0/nums[1]), 2)),
 
 				}
-			OpFunction::Factorial => Ok((factorial(nums[0] as i64) as f64, 1)),
+			OpFunction::Factorial => Ok((factorial(nums[0] as u64) as f64, 1)),
 			OpFunction::Logarithm =>
 				match nums.len() {
 					1     => Ok((nums[0].log10(), 1)),
@@ -185,7 +185,7 @@ impl Operator for OpFunction {
 	}
 }
 
-fn factorial(n: i64) -> i64 {
+fn factorial(n: u64) -> u64 {
 	match n {
 		0 | 1 => 1,
 		_     => n * factorial(n - 1),

@@ -55,9 +55,9 @@ fn main() {
 
 				rose.handle(&result);
 			}
-			None    => rose.parse_stdin(),
+			None    => rose.start(false),
 		}
 	} else {
-		rose.start()
+		rose.start(true)
 	}
 }
