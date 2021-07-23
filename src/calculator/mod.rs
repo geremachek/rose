@@ -4,6 +4,16 @@ use crate::errors::RoseError;
 pub mod enviroment;
 mod config;
 
+// macro that deals with handling output and quiting
+
+macro_rules! handle_quit {
+	($s:ident, $r:ident) => {
+		if $s.handle($r) {
+			break
+		}
+	}
+}
+
 // enum representing the possible values returned by our calculator
 
 pub enum CalcResult {
@@ -44,24 +54,37 @@ pub trait Calculator {
 		false
 	}
 
-	// parse standard input (a file or some text) or launch into a repl
+	// start an interative REPL
 
-	fn start(&mut self, prompt: bool) {
+	fn start(&mut self) {
+		let mut input = String::new();
+
+		loop {
+			print!("{}", self.get_env().conf.prompt);
+
+			std::io::stdout()
+				.flush()
+				.expect("rose: unable to flush stdout");
+
+			io::stdin()
+				.read_line(&mut input)
+				.expect("rose: unable to read line");
+
+			let results = &self.meta_parse(&input);
+			
+			handle_quit!(self, results);
+			input.clear()
+		}
+	}
+
+	// parse standard input (a file or some text) instead of launching into a repl
+
+	fn parse_stdin(&mut self) {
 		for line in io::stdin().lock().lines() {
-			if prompt {
-				print!("{}", self.get_env().conf.prompt);
-
-				std::io::stdout()
-					.flush()
-					.expect("rose: unable to flush stdout");
-			}
-
 			let result = &self.meta_parse(&line
 				.expect("rose: couldn't read from stdin"));
-
-			if self.handle(result) { // stop early if handle returns true
-				break;
-			}
+		
+			handle_quit!(self, result);
 		}
 	}
 
