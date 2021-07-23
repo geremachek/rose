@@ -93,8 +93,7 @@ pub trait Calculator {
 	fn meta_parse(&mut self, line: &str) -> Result<Vec<CalcResult>, RoseError> {
 		let prep = &line.split_at(line.chars()
 			.position(|c| c == '#')
-			.or(Some(line.len()))
-			.unwrap()).0
+			.unwrap_or(line.len())).0
 			.split_whitespace().collect::<Vec<&str>>()[..];
 
 		if prep.is_empty() {
