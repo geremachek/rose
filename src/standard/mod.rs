@@ -14,7 +14,7 @@ impl Standard {
 
 	pub fn new(s: bool, f: bool, r: bool) -> Standard {
 		let mut e = Enviroment::new(s, f);
-		e.store(ANSWER, 0.0);
+		e.vars.insert(ANSWER.to_string(), 0.0);
 
 		Standard { env: e, reverse: r }	
 	}

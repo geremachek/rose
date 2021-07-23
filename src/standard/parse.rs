@@ -6,17 +6,17 @@ impl Standard {
 
 	pub fn parser(&mut self, elems: &[&str]) -> Result<CalcResult, RoseError> {
 		if let Ok(v) = self.evaluate_expression(&elems) {
-			self.env.store(ANSWER, v);
+			self.env.vars.insert(ANSWER.to_string(), v);
 			return Ok(CalcResult::Answer(v));
 		} else {
 			match elems[0] { // match the command
-				"put"     | "p"  => return Ok(CalcResult::Output(*self.env.read_var(ANSWER).unwrap())),
+				"put"     | "p"  => return Ok(CalcResult::Output(*self.env.vars.get(ANSWER).unwrap())),
 				"reverse" | "r"  => self.reverse = !self.reverse,
 				"set"     | "="  => {
 					if elems.len() >= 3 {
 						if let Err(_) = elems[1].parse::<f64>() { // we don't want the user redefining the value of a number!
 							if let Ok(n) = self.evaluate_expression(&elems[2..]) {
-								self.env.store(elems[1], n);
+								self.env.vars.insert(elems[1].to_string(), n);
 							}
 						} else {
 							return Err(RoseError::InvalidSyntax);
@@ -86,12 +86,9 @@ impl Standard {
 						match self.env.check_value(val) {
 							Ok(v)  => values.push(v),
 							Err(_) => { // this could be a genuine error... or we could be using paranthesis.
-								if val.starts_with("(") {
-									sub_expr.push(&val.strip_prefix("(").unwrap());
-
-									sub_mode = true;
-								} else {
-									return Err(RoseError::StrangeArguments);
+								match &val.strip_prefix("(") {
+									Some(_) => sub_mode = true,
+									None    => return Err(RoseError::StrangeArguments),
 								}
 							}
 						}

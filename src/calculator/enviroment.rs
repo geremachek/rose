@@ -8,7 +8,7 @@ pub struct Enviroment {
 	pub silent: bool,
 	pub format: bool,
 
-	vars: HashMap<String, f64>,
+	pub vars: HashMap<String, f64>,
 	
 	pub conf: Config,
 }
@@ -82,17 +82,5 @@ impl Enviroment {
 			None    => val.parse::<f64>()
 					.or(Err(RoseError::StrangeArguments)),
 		}
-	}
-
-	// create a new, or update a variable
-
-	pub fn store(&mut self, name: &str, val: f64) {
-		self.vars.insert(name.to_string(), val);
-	}
-
-	// get a variable
-
-	pub fn read_var(&mut self, name: &str) -> Option<&f64> {
-		self.vars.get(name)
 	}
 }
