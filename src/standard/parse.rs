@@ -87,8 +87,12 @@ impl Standard {
 							Ok(v)  => values.push(v),
 							Err(_) => { // this could be a genuine error... or we could be using paranthesis.
 								match &val.strip_prefix("(") {
-									Some(_) => sub_mode = true,
+									Some(t) => {
+										sub_expr.push(t);
+										sub_mode = true;
+									}
 									None    => return Err(RoseError::StrangeArguments),
+
 								}
 							}
 						}
