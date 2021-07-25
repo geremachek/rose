@@ -40,24 +40,30 @@ fn main() {
 
 	let mut rev = None;
 
+	// not in stack mode
+
 	if !rose_args.is_present("stack") {
 		rev = Some(rose_args.is_present("reverse"));
 	}
+
+	// create our new calculator
 
 	let mut rose = calculator::new_calc(rose_args.is_present("silent"),
 		!rose_args.is_present("format"),
 		rev);
 
+	// eval option...
+
 	if rose_args.is_present("evaluate") {
 		match rose_args.value_of("EXPRESSION") {
-			Some(e) => {
+			Some(e) => { // parse argument
 				let result = rose.meta_parse(e);
 
 				rose.handle(&result);
 			}
-			None    => rose.parse_stdin(),
+			None    => rose.parse_stdin(), // parse stdin
 		}
 	} else {
-		rose.start()
+		rose.start() // start shell
 	}
 }

@@ -107,9 +107,8 @@ pub trait Calculator {
 // new calculator
 
 pub fn new_calc(s: bool, f: bool, r: Option<bool>) -> Box<dyn Calculator> {
-	if let Some(b) = r {
-		return Box::new(crate::standard::Standard::new(s, f, b));
+	match r {
+		Some(b) => Box::new(crate::standard::Standard::new(s, f, b)),
+		None    => Box::new(crate::stack::Stack::new(s, f)),
 	}
-
-	Box::new(crate::stack::Stack::new(s, f))
 }
