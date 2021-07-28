@@ -9,6 +9,7 @@ enum OpBasic {
 	Multiplication,
 	Division,
 	Power,
+	Modulus
 }
 
 // enum for mathematical functions
@@ -77,6 +78,10 @@ impl TryFrom<&str> for OpBasic {
 			"pow"        => Ok(OpBasic::Power),
 			"power"      => Ok(OpBasic::Power),
 
+			"%"          => Ok(OpBasic::Modulus),
+			"mod"        => Ok(OpBasic::Modulus),
+			"modulus"    => Ok(OpBasic::Modulus),
+
 			_            => Err(RoseError::UnknownCommand),
 		}
 	}
@@ -105,6 +110,7 @@ impl Operator for OpBasic {
 					}
 				}
 				OpBasic::Power          => result = result.powf(*i),
+				OpBasic::Modulus        => result %= i
 			}
 		}
 

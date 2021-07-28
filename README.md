@@ -5,7 +5,6 @@ A dead simple prefix/polish notation evaluator and stack calculator
 **Usage:**
 
 ```
-rose 2.4.2
 A simple (reverse) polish notation calculator
 
 USAGE:
