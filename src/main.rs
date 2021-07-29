@@ -1,6 +1,6 @@
 extern crate clap;
 
-use clap::{Arg, App};
+use clap::{Arg, App, crate_version};
 
 mod arithmetic;
 mod standard;
@@ -11,6 +11,7 @@ mod calculator;
 fn main() {
 	let rose_args = App::new("rose:")
 				.about("A simple (reverse) polish notation evaluator and stack calculator")
+				.version(crate_version!())
 				.arg(Arg::with_name("stack")
 					.short("S")
 					.long("stack")
