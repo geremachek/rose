@@ -1,6 +1,29 @@
 use crate::errors::RoseError;
 use std::convert::TryFrom;
 
+// raise an error when we divide by zero
+
+macro_rules! handle_div_by_0 {
+	($res:ident, $i:ident, $op:tt) => {
+		if $i != &0.0 {
+			$res $op $i
+		} else {
+			return Err(RoseError::StrangeArguments);
+		}
+	}
+}
+
+// deal with operators that take 1 or 2 or more arguments
+
+macro_rules! o1_or_2 {
+	($len:ident, $one:expr, $two:expr) => {
+		match $len  {
+			1     => Ok(($one, 1)),
+			2 | _ => Ok(($two, 2)),
+		}
+	}
+}
+
 // enum for basic mathematical operators
 
 enum OpBasic {
@@ -100,17 +123,9 @@ impl Operator for OpBasic {
 				OpBasic::Addition       => result += i,
 				OpBasic::Subtraction    => result -= i,
 				OpBasic::Multiplication => result *= i,
-				OpBasic::Division       => {
-					// throw an error if we divide by zero
-
-					if i != &0.0 {
-						result /= i
-					} else {
-						return Err(RoseError::StrangeArguments)
-					}
-				}
+				OpBasic::Division       => handle_div_by_0!(result, i, /=),
 				OpBasic::Power          => result = result.powf(*i),
-				OpBasic::Modulus        => result %= i
+				OpBasic::Modulus        => handle_div_by_0!(result, i, %=),
 			}
 		}
 
@@ -162,21 +177,12 @@ impl TryFrom<&str> for OpFunction {
 
 impl Operator for OpFunction {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
+		let len = nums.len();
+
 		match self {
-			OpFunction::Root =>
-				// in order to calculate a root, there must be two arguments
-
-				match nums.len()  {
-					1     => Ok((nums[0].powf(0.5), 1)),
-					2 | _ => Ok((nums[0].powf(1.0/nums[1]), 2)),
-
-				}
-			OpFunction::Factorial => Ok((factorial(nums[0] as u64) as f64, 1)),
-			OpFunction::Logarithm =>
-				match nums.len() {
-					1     => Ok((nums[0].log10(), 1)),
-					2 | _ => Ok((nums[1].log(nums[0]), 2)),
-				}
+			OpFunction::Root        => o1_or_2!(len, nums[0].powf(0.5), nums[0].powf(1.0/nums[1])),
+			OpFunction::Factorial   => Ok((factorial(nums[0] as u64) as f64, 1)),
+			OpFunction::Logarithm   => o1_or_2!(len, nums[0].log10(), nums[1].log(nums[0])),
 
 			OpFunction::Ln          => Ok((nums[0].ln(), 1)),
 			
