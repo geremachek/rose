@@ -47,6 +47,9 @@ ARGS:
 ^ 5 6
   -> 15625
 
+% 23 2
+  -> 1
+
 # Functions
 
 root 25 # By default root does square roots

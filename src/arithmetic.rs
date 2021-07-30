@@ -32,7 +32,7 @@ enum OpBasic {
 	Multiplication,
 	Division,
 	Power,
-	Modulus
+	Modulo
 }
 
 // enum for mathematical functions
@@ -101,9 +101,10 @@ impl TryFrom<&str> for OpBasic {
 			"pow"        => Ok(OpBasic::Power),
 			"power"      => Ok(OpBasic::Power),
 
-			"%"          => Ok(OpBasic::Modulus),
-			"mod"        => Ok(OpBasic::Modulus),
-			"modulus"    => Ok(OpBasic::Modulus),
+			"%"          => Ok(OpBasic::Modulo),
+			"mod"        => Ok(OpBasic::Modulo),
+			"modulo"     => Ok(OpBasic::Modulo),
+			"modulus"    => Ok(OpBasic::Modulo),
 
 			_            => Err(RoseError::UnknownCommand),
 		}
@@ -125,7 +126,7 @@ impl Operator for OpBasic {
 				OpBasic::Multiplication => result *= i,
 				OpBasic::Division       => handle_div_by_0!(result, i, /=),
 				OpBasic::Power          => result = result.powf(*i),
-				OpBasic::Modulus        => handle_div_by_0!(result, i, %=),
+				OpBasic::Modulo         => handle_div_by_0!(result, i, %=),
 			}
 		}
 
