@@ -1,5 +1,6 @@
 use crate::errors::RoseError;
 use std::convert::TryFrom;
+use factorial::Factorial;
 
 // raise an error when we divide by zero
 
@@ -182,7 +183,7 @@ impl Operator for OpFunction {
 
 		match self {
 			OpFunction::Root        => o1_or_2!(len, nums[0].powf(0.5), nums[0].powf(1.0/nums[1])),
-			OpFunction::Factorial   => Ok((factorial(nums[0] as u64) as f64, 1)),
+			OpFunction::Factorial   => Ok(((nums[0] as u64).checked_factorial().ok_or(RoseError::Overflow)? as f64, 1)),
 			OpFunction::Logarithm   => o1_or_2!(len, nums[0].log10(), nums[1].log(nums[0])),
 
 			OpFunction::Ln          => Ok((nums[0].ln(), 1)),
@@ -195,12 +196,5 @@ impl Operator for OpFunction {
 			OpFunction::Arccosine   => Ok((nums[0].acos(), 1)),
 			OpFunction::Arctangent  => Ok((nums[0].atan(), 1)),
 		}
-	}
-}
-
-fn factorial(n: u64) -> u64 {
-	match n {
-		0 | 1 => 1,
-		_     => n * factorial(n - 1),
 	}
 }
