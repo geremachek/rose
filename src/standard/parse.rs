@@ -63,16 +63,16 @@ impl Standard {
 				for val in elems.iter().skip(begin).take(end) {
 					if sub_mode {
 						if val.starts_with("(") {
-							open += val.matches("(").count();
+							open += 1;
 						} else if val.ends_with(")") {
 							closed += val.matches(")").count();
 						}
 
-						if open == closed {
+						if open == closed { // reached the end of the sub-expression
 							sub_expr.push(val.strip_suffix(")")
 								.unwrap());
 
-							values.push(self.evaluate_expression(&sub_expr)?);
+							values.push(self.evaluate_expression(&sub_expr)?); // evaluate it!
 
 							sub_mode = false;
 							sub_expr.clear();
