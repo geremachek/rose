@@ -20,7 +20,7 @@ FLAGS:
     -V, --version     Prints version information
 
 ARGS:
-    <EXPRESSION>    Expression to evaluate (requires the '-e' flag)
+    <EXPRESSION>...    Expression to evaluate
 ```
 
 **Syntax:**
