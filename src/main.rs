@@ -25,10 +25,6 @@ fn main() {
 					.short("e")
 					.long("evaluate")
 					.help("Evaluate stdin line by line"))
-				.arg(Arg::with_name("EXPRESSION")
-					.index(1)
-					.requires("evaluate")
-					.help("Expression to evaluate (requires the \"-e\" flag)"))
 				.arg(Arg::with_name("silent")
 					.short("s")
 					.long("silent")
@@ -37,6 +33,9 @@ fn main() {
 					.short("f")
 					.long("format")
 					.help("Don't format output"))
+				.arg(Arg::with_name("EXPRESSION")
+					.index(1)
+					.help("Expression to evaluate"))
 				.get_matches();
 
 	let mut rev = None;
@@ -44,7 +43,7 @@ fn main() {
 	// not in stack mode
 
 	if !rose_args.is_present("stack") {
-		rev = Some(rose_args.is_present("reverse"));
+		rev = Some(rose_args.is_present("reverse")); // only standard mode requires the reverse option
 	}
 
 	// create our new calculator
@@ -53,18 +52,12 @@ fn main() {
 		!rose_args.is_present("format"),
 		rev);
 
-	// eval option...
-
-	if rose_args.is_present("evaluate") {
-		match rose_args.value_of("EXPRESSION") {
-			Some(e) => { // parse argument
-				let result = rose.meta_parse(e);
-
-				rose.handle(&result);
-			}
-			None    => rose.parse_stdin(), // parse stdin
-		}
+	if let Some(e) = rose_args.value_of("EXPRESSION") { // if we get an expression argument, parse it!
+		let result = rose.meta_parse(e);
+		rose.handle(&result);
+	} else if rose_args.is_present("evaluate") { // evaluate option has been passed
+		rose.parse_stdin() // parse stdin
 	} else {
-		rose.start() // start shell
+		rose.start() // start the shell!
 	}
 }
