@@ -35,6 +35,7 @@ fn main() {
 					.help("Don't format output"))
 				.arg(Arg::with_name("EXPRESSION")
 					.index(1)
+					.multiple(true)
 					.help("Expression to evaluate"))
 				.get_matches();
 
@@ -52,8 +53,8 @@ fn main() {
 		!rose_args.is_present("format"),
 		rev);
 
-	if let Some(e) = rose_args.value_of("EXPRESSION") { // if we get an expression argument, parse it!
-		let result = rose.meta_parse(e);
+	if let Some(e) = rose_args.values_of("EXPRESSION") { // if we get an expression argument, parse it!
+		let result = rose.meta_parse(&e.collect::<Vec<&str>>().join(" "));
 		rose.handle(&result);
 	} else if rose_args.is_present("evaluate") { // evaluate option has been passed
 		rose.parse_stdin() // parse stdin
