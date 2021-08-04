@@ -3,5 +3,6 @@ pub enum RoseError {
 	InvalidSyntax,
 	StrangeArguments,
 	Overflow,
+	StackEmpty,
 }
 

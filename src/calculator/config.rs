@@ -1,5 +1,7 @@
 use std::env;
 
+// config structure
+
 pub struct Config {
 	pub prompt: String,
 
@@ -8,6 +10,8 @@ pub struct Config {
 }
 
 impl Config {
+	// create a new Config structure, reading from enviroment variables
+
 	pub fn new() -> Config {
 		Config {
 			prompt: env::var("ROSE_PROMPT")
@@ -18,6 +22,8 @@ impl Config {
 				.unwrap_or_else(|_| "".to_string()),
 		}
 	}
+
+	// format a numerical result from the parser
 
 	pub fn format_result(&self, result: f64) {
 		println!("{}{}{}",

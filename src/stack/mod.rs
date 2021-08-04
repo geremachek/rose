@@ -16,6 +16,8 @@ impl Stack {
 		Stack { env: Enviroment::new(s, f), stack: Vec::new() }
 	}
 
+	// display the stack
+
 	fn show_stack(&self) -> String {
 		let mut shown = String::new();
 		
@@ -29,6 +31,8 @@ impl Stack {
 
 		shown
 	}
+
+	// swap values
 
 	fn twirl(&mut self) {
 		let len = self.stack.len();

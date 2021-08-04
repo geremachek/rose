@@ -5,23 +5,23 @@ impl Stack {
 	// parse a single element from our list of elements
 
 	pub fn parse_element(&mut self, elem: &str) -> Result<CalcResult, RoseError> {
-		if let Ok(v) = self.env.check_value(elem) {
+		if let Ok(v) = self.env.check_value(elem) { // normal value
 			self.stack.push(v);
-		} else if let Ok(o) = arithmetic::new_operator(elem) {
-			if !self.stack.is_empty() {
+		} else if let Ok(o) = arithmetic::new_operator(elem) { // operator!
+			if !self.stack.is_empty() { // our stack musn't be empty to operate
 				let mut opr_vec = Vec::new();
 				let len = self.stack.len();
 
-				if len > 1 {
+				if len > 1 { // detach the last two variables
 					opr_vec = self.stack[(len-2)..].to_vec();
-				} else {
+				} else { // the the last variable
 					opr_vec.push(self.stack[len - 1]);
 				}
 
-				if let Ok((v, n)) = o.operate(&opr_vec) {
+				if let Ok((v, n)) = o.operate(&opr_vec) { // operation worked
 					// remove the used values from the stack
 
-					for _ in 0..n {
+					for _ in 0..n { // remove the values from the stack
 						self.stack.pop();
 					}
 
@@ -34,16 +34,16 @@ impl Stack {
 		} else {
 			match elem {
 				"put"     | "p"         => return Ok(CalcResult::Output(*self.stack.last()
-								.unwrap_or(&0.0))),
+								.ok_or(RoseError::StackEmpty)?)), // last stack item
 				"stack"   | "."         => return Ok(CalcResult::Message(self.show_stack())),
 				"clear"   | "c"         => self.stack.clear(),
 				"reverse" | "rev" | "r" => self.stack.reverse(),
 				"twirl"   | "t"         => self.twirl(),
 				"pop"     | "P"         => { self.stack.pop(); }
-				_                       => return self.env.command(elem),
+				_                       => return self.env.command(elem), // send to the enviroment command parser
 			}
 		}
 
-		Ok(CalcResult::None)
+		Ok(CalcResult::None) // nothing to handle by default
 	}
 }

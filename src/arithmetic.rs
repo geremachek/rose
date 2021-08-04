@@ -71,6 +71,8 @@ pub fn new_operator(symb: &str) -> Result<Box<dyn Operator>, RoseError> {
 	}
 }
 
+// convert from a symbol into an operator
+
 impl TryFrom<&str> for OpBasic {
 	type Error = RoseError;
 
@@ -112,6 +114,8 @@ impl TryFrom<&str> for OpBasic {
 	}
 }
 
+// operate using OpBasic
+
 impl Operator for OpBasic {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {
 		// if the values feild is empty, return an error, otherwise calculate.
@@ -134,6 +138,8 @@ impl Operator for OpBasic {
 		Ok((result, nums.len()))
 	}
 }
+
+// symbol -> operator function
 
 impl TryFrom<&str> for OpFunction {
 	type Error = RoseError;
@@ -176,6 +182,8 @@ impl TryFrom<&str> for OpFunction {
 		}
 	}
 }
+
+// operate using OpFunction
 
 impl Operator for OpFunction {
 	fn operate(&self, nums: &[f64]) -> Result<(f64, usize), RoseError> {

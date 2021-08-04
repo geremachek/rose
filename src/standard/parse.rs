@@ -61,7 +61,7 @@ impl Standard {
 				let mut closed = 0;
 
 				for val in elems.iter().skip(begin).take(end) {
-					if sub_mode {
+					if sub_mode { // inside parens
 						if val.starts_with("(") {
 							open += 1;
 						} else if val.ends_with(")") {
@@ -74,6 +74,8 @@ impl Standard {
 
 							values.push(self.evaluate_expression(&sub_expr)?); // evaluate it!
 
+							// reset everything
+
 							sub_mode = false;
 							sub_expr.clear();
 
@@ -84,7 +86,7 @@ impl Standard {
 						}
 					} else {
 						match self.env.check_value(val) {
-							Ok(v)  => values.push(v),
+							Ok(v)  => values.push(v), // push teh value to the stack
 							Err(_) => { // this could be a genuine error... or we could be using paranthesis.
 								match &val.strip_prefix("(") {
 									Some(t) => {
@@ -99,7 +101,7 @@ impl Standard {
 					}
 				}
 				
-				return Ok(o.operate(&values)?.0)
+				return Ok(o.operate(&values)?.0) // operate on the values, returing the result
 			}
 		}
 

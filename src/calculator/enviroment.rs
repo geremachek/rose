@@ -37,9 +37,11 @@ impl Enviroment {
 	pub fn command(&mut self, word: &str) -> Result<CalcResult, RoseError> {
 		match word {
 			"quit"    | "q" => return Ok(CalcResult::Quit),
-			"silent"  | "s" => self.silent = !self.silent,
-			"format"  | "f" => self.format = !self.format,
+			"silent"  | "s" => self.silent = !self.silent, // toggle silent mode
+			"format"  | "f" => self.format = !self.format, // toggle formatting
 			"memory"  | "m" | "mem" => {
+				// output memory variables in a little "table"
+			
 				let mut msg = String::new();
 
 				for (name, value) in &self.vars {
@@ -57,8 +59,8 @@ impl Enviroment {
 	// format the output based on enviroment variables
 
 	pub fn output_result(&self, result: f64, silent: bool) {
-		if !silent {
-			if self.format {
+		if !silent { // show nothing if in silent mode
+			if self.format { // format 
 				self.conf.format_result(result);
 			} else {
 				println!("{}", result);
@@ -72,14 +74,16 @@ impl Enviroment {
 		let mut trimmed_val = val;
 		let mut sign = 1.0; // by default the sign is positive
 
+		// trim '-'
+
 		if let Some(trim) = val.strip_prefix("-") {
 			trimmed_val = trim;
 			sign = -1.0;
 		}
 
 		match self.vars.get(trimmed_val) {
-			Some(n) => Ok(*n*sign),
-			None    => val.parse::<f64>()
+			Some(n) => Ok(*n*sign), // valid variable, multiply so we can preserve the possible negative value
+			None    => val.parse::<f64>() // normal value
 					.or(Err(RoseError::StrangeArguments)),
 		}
 	}

@@ -61,6 +61,8 @@ pub trait Calculator {
 
 		loop {
 			print!("{}", self.get_env().conf.prompt);
+			
+			// flush stdout to show the prompt
 
 			std::io::stdout()
 				.flush()
@@ -96,7 +98,7 @@ pub trait Calculator {
 			.unwrap_or(line.len())).0
 			.split_whitespace().collect::<Vec<&str>>()[..];
 
-		if prep.is_empty() {
+		if prep.is_empty() { // retun nothing if the string is empty
 			return Ok(vec![CalcResult::None]);
 		}
 		
