@@ -19,10 +19,10 @@ impl Standard {
 								self.env.vars.insert(elems[1].to_string(), n);
 							}
 						} else {
-							return Err(RoseError::InvalidSyntax);
+							return Err(RoseError::StrangeArguments);
 						}
 					 } else {
-					 	return Err(RoseError::StrangeArguments);
+					 	return Err(RoseError::InvalidSyntax);
 					 }
 				}
 				_                => return self.env.command(elems[0]),

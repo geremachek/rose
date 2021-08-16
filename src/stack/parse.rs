@@ -18,18 +18,20 @@ impl Stack {
 					opr_vec.push(self.stack[len - 1]);
 				}
 
-				if let Ok((v, n)) = o.operate(&opr_vec) { // operation worked
-					// remove the used values from the stack
+				let (v, n) = o.operate(&opr_vec)?; // operate!
+				
+				// remove the used values from the stack
 
-					for _ in 0..n { // remove the values from the stack
-						self.stack.pop();
-					}
-
-					// add the result to the stack and return it
-
-					self.stack.push(v);
-					return Ok(CalcResult::Answer(v));
+				for _ in 0..n { // remove the values from the stack
+					self.stack.pop();
 				}
+
+				// add the result to the stack and return it
+
+				self.stack.push(v);
+				return Ok(CalcResult::Answer(v));
+			} else {
+				return Err(RoseError::StackEmpty);
 			}
 		} else {
 			match elem {

@@ -48,7 +48,7 @@ pub trait Calculator {
 					}
 				}
 			}
-			Err(_)  => eprintln!("?"),
+			Err(e)  => eprintln!("{}", e),
 		}
 
 		false
