@@ -84,7 +84,7 @@ impl Enviroment {
 		match self.vars.get(trimmed_val) {
 			Some(n) => Ok(*n*sign), // valid variable, multiply so we can preserve the possible negative value
 			None    => val.parse::<f64>() // normal value
-					.or(Err(RoseError::StrangeArguments)),
+					.or(Err(RoseError::StrangeArguments))
 		}
 	}
 }
