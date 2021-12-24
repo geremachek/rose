@@ -66,11 +66,11 @@ pub trait Calculator {
 
 			std::io::stdout()
 				.flush()
-				.expect("rose: unable to flush stdout");
+				.expect(&fmt_err("unable to flush stdout"));
 
 			io::stdin()
 				.read_line(&mut input)
-				.expect("rose: unable to read line");
+				.expect(&fmt_err("unable to read line"));
 
 			let results = &self.meta_parse(&input);
 			
@@ -84,7 +84,7 @@ pub trait Calculator {
 	fn parse_stdin(&mut self) {
 		for line in io::stdin().lock().lines() {
 			let result = &self.meta_parse(&line
-				.expect("rose: couldn't read from stdin"));
+				.expect(&fmt_err("couldn't read from stdin")));
 		
 			handle_quit!(self, result);
 		}
@@ -113,4 +113,8 @@ pub fn new_calc(s: bool, f: bool, r: Option<bool>) -> Box<dyn Calculator> {
 		Some(b) => Box::new(crate::standard::Standard::new(s, f, b)),
 		None    => Box::new(crate::stack::Stack::new(s, f)),
 	}
+}
+
+fn fmt_err(msg: &str) -> String {
+	format!("rose: {}", msg)
 }
