@@ -50,9 +50,8 @@ fn main() {
 	// create our new calculator
 
 	let mut rose = calculator::new_calc(rose_args.is_present("silent"),
-		!rose_args.is_present("format"),
-		rev);
-
+		!rose_args.is_present("format"), rev);
+	
 	if let Some(e) = rose_args.values_of("EXPRESSION") { // if we get an expression argument, parse it!
 		let result = rose.meta_parse(&e.collect::<Vec<&str>>().join(" "));
 		rose.handle(&result);

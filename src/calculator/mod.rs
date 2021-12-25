@@ -85,7 +85,7 @@ pub trait Calculator {
 		for line in io::stdin().lock().lines() {
 			let result = &self.meta_parse(&line
 				.expect(&fmt_err("couldn't read from stdin")));
-		
+			
 			handle_quit!(self, result);
 		}
 	}
@@ -93,6 +93,8 @@ pub trait Calculator {
 	// prepare our string for parsing and then parse it
 
 	fn meta_parse(&mut self, line: &str) -> Result<Vec<CalcResult>, RoseError> {
+		// remove comments
+
 		let prep = &line.split_at(line.chars()
 			.position(|c| c == '#')
 			.unwrap_or(line.len())).0
