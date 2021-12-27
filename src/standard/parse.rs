@@ -1,4 +1,9 @@
-use crate::{calculator::CalcResult, arithmetic, errors::RoseError};
+use crate::{
+	calculator::CalcResult,
+	arithmetic,
+	errors::RoseError,
+};
+
 use super::{Standard, ANSWER};
 
 impl Standard {
@@ -14,10 +19,9 @@ impl Standard {
 				"reverse" | "r"  => self.reverse = !self.reverse,
 				"set"     | "="  => {
 					if elems.len() >= 3 {
-						if let Err(_) = elems[1].parse::<f64>() { // we don't want the user redefining the value of a number!
-							if let Ok(n) = self.evaluate_expression(&elems[2..]) {
-								self.env.vars.insert(elems[1].to_string(), n);
-							}
+						if elems[1].parse::<f64>().is_err() { // we don't want the user redefining the value of a number!
+								self.env.vars.insert(elems[1].to_string(),
+									self.evaluate_expression(&elems[2..])?);
 						} else {
 							return Err(RoseError::StrangeArguments);
 						}

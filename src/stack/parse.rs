@@ -1,5 +1,10 @@
 use super::Stack;
-use crate::{errors::RoseError, {arithmetic, calculator::CalcResult}};
+
+use crate::{
+	errors::RoseError,
+	arithmetic,
+	calculator::CalcResult,
+};
 
 impl Stack {
 	// parse a single element from our list of elements

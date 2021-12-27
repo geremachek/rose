@@ -1,4 +1,12 @@
-use crate::{errors::RoseError, calculator::{Calculator, CalcResult, enviroment::Enviroment}};
+use crate::{
+	errors::RoseError,
+
+	calculator::{
+		Calculator,
+		CalcResult,
+		enviroment::Enviroment
+	},
+};
 
 mod parse;
 
