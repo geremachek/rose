@@ -1,6 +1,6 @@
 [package]
 name = "rose"
-version = "2.5.8"
+version = "2.6.0"
 authors = ["geremachek <mrender2005@gmail.com>"]
 edition = "2021"
 
