@@ -12,6 +12,7 @@ mod parse;
 
 const ANSWER: &str = "$"; // the variable that stores the answer
 
+#[derive(Default)]
 pub struct Standard {
 	env: Enviroment,
 	reverse: bool
@@ -20,11 +21,11 @@ pub struct Standard {
 impl Standard {
 	// create a new standard calculator
 
-	pub fn new(s: bool, f: bool, r: bool) -> Standard {
+	pub fn new(s: bool, f: bool, r: bool) -> Self {
 		let mut e = Enviroment::new(s, f);
 		e.vars.insert(ANSWER.to_string(), 0.0); // add answer variable
 
-		Standard { env: e, reverse: r }	
+		Self { env: e, reverse: r }	
 	}
 }
 

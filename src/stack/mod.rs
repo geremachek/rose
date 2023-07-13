@@ -12,6 +12,7 @@ mod parse;
 
 // Stack calculator
 
+#[derive(Default)]
 pub struct Stack {
 	env: Enviroment,
 	stack: Vec<f64>,
@@ -20,8 +21,8 @@ pub struct Stack {
 impl Stack {
 	// create a new stack calculator
 
-	pub fn new(s: bool, f: bool) -> Stack {
-		Stack { env: Enviroment::new(s, f), stack: Vec::new() }
+	pub fn new(s: bool, f: bool) -> Self {
+		Self { env: Enviroment::new(s, f), stack: Vec::new() }
 	}
 
 	// display the stack

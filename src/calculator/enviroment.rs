@@ -4,6 +4,7 @@ use crate::errors::RoseError;
 
 // a common "enviroment" for calculators
 
+#[derive(Default)]
 pub struct Enviroment {
 	pub silent: bool,
 	pub format: bool,
@@ -16,14 +17,14 @@ pub struct Enviroment {
 impl Enviroment {
 	// create a new enviroment instance
 
-	pub fn new(s: bool, f: bool) -> Enviroment {
+	pub fn new(s: bool, f: bool) -> Self {
 		let variables =
 		 	 [("pi".to_string(), std::f64::consts::PI),
 			 ("tau".to_string(), std::f64::consts::PI*2.0),
 			 ("e".to_string(), std::f64::consts::E)]
 			.iter().cloned().collect();
 
-		Enviroment {
+		Self {
 			silent: s,
 			format: f,
 			

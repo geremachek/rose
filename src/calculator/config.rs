@@ -2,6 +2,7 @@ use std::env;
 
 // config structure
 
+#[derive(Default)]
 pub struct Config {
 	pub prompt: String,
 
@@ -12,8 +13,8 @@ pub struct Config {
 impl Config {
 	// create a new Config structure, reading from enviroment variables
 
-	pub fn new() -> Config {
-		Config {
+	pub fn new() -> Self {
+		Self {
 			prompt: env::var("ROSE_PROMPT")
 				.unwrap_or_else(|_| "".to_string()),
 			fmt_prefix: env::var("ROSE_FORMAT_PREFIX")
